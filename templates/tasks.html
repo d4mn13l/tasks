@@ -22,13 +22,13 @@
                     <h1>Aufgaben</h1>
                     <div class="form-check">
                         {%for task in tasks%}
-                        <input type="checkbox" name="Aufgabe-{{task.id}}" id="{{task.title}}" value="{{ task.id }}"
+                        <input type="checkbox" name="{{task.id}}" id="{{task.title}}" value="{{ task.id }}"
                             class="form-check-input">
                         <label class="form-check-label" for="{{task.title}}">{{task.title}}</label>
                         <br>
                         {%endfor%}
                     </div>
-                    <input type="submit" name="Abschicken" class="btn btn-primary">
+                    <input type="submit" name="-1" class="btn btn-primary">
                 </form>
                 
                 <form method="POST" action="/login">

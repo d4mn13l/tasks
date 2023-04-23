@@ -35,7 +35,10 @@ def get_user(user_id):
 
 @app.route("/")
 def main():
-#    return render_template("index.html")
+    return render_template("tasks.html", tasks = tasks)
+
+@app.route("/tasks")
+def tasks():
     return render_template("tasks.html", tasks = tasks)
 
 @app.route("/login", methods=["POST"])
@@ -69,9 +72,19 @@ def admin():
 def log():
     done = True
     # iterate over request.form.keys() dismissing "Abschicken"
-    aufgaben = [int(i) for i in request.form.get("Aufgabe", [])]
+    #aufgaben = [int(i) for i in request.form.get("Aufgabe", [])]
+#    done_tasks = [i for i in request.form.keys()]
+    #print(request.form.keys())
+    #done_tasks = [i for i in request.form.keys()]
+    done_tasks = []
+    for key in request.form.keys():
+        try:
+            done_tasks.append(int(key))
+        except TypeError:
+            continue
+    print(done_tasks)
     for task in tasks:
-        if task["id"] in aufgaben:
+        if task["id"] in done_tasks:
             task["done"] = True
         else:
             task["done"] = False
@@ -83,12 +96,7 @@ def log():
 
 def create_log(done):
     date = datetime.datetime.now()
-    d = ""
-    if done == True:
-        d = date.strftime("%c"), ", alle Aufgaben erledigt."
-    else:
-        d = "nicht alles erledigt"
-    return d
+    return date.strftime("%c"), ", alle Aufgaben erledigt." if done == True else "nicht alles erledigt"
 
 if __name__ == "__main__":
     app.run(debug=True)
