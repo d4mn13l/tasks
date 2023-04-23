@@ -36,8 +36,7 @@ def main():
 
 @app.route("/todolist")
 def todolist():
-    with open("tasks.json", "r") as tasks_data:
-        tasks = json.load(tasks_data)
+    tasks = get_tasks()
     return render_template("tasks.html", tasks = tasks)
 
 @app.route("/login", methods=["POST"])
@@ -93,12 +92,9 @@ def log():
 @app.route("/addtask", methods=["POST", "GET"])
 @login_required
 def addtask():
-    print(request.form)
     tasks = get_tasks()
-    with open("tasks.json", "w") as tasks_data: 
-        breakpoint()
-        tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": request.form["description"]})
-        tasks_data.write(json.dumps(tasks))
+    tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": request.form["description"]})
+    set_tasks(tasks)
     return redirect("/")
 
 @app.route("/deletetask", methods=["POST"])
@@ -113,8 +109,8 @@ def deletetask():
     for task in tasks:
         if task["id"] in to_delete:
             tasks.remove(task)
-    update_task_ids()
     set_tasks(tasks)
+    update_task_ids()
     return redirect("/")
 
 
@@ -133,7 +129,8 @@ def set_tasks(tasks):
 def update_task_ids():
     tasks = get_tasks()
     for i in range(0, len(tasks)):
-        tasks[i]["id"] = i
+        tasks[i]["id"] = i + 1
+#        breakpoint()
     set_tasks(tasks)
 
 if __name__ == "__main__":
