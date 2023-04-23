@@ -10,11 +10,8 @@ import json
 import time
 import datetime
 
-
-tasks = [
-    {"id": 1, "title": "Kaffeemaschine reinigen", "done": False, "description": "Beschreibung"},
-    {"id": 2, "title": "Licht ausschalten", "done": False, "description": "Lichtschlater umlegen"}
-]
+#with open("tasks.json", "r") as tasks_data:
+#    tasks = json.loads(tasks_data)
 
 app = Flask(__name__)
 app.secret_key = "q377v5zn8304zn47tiug2du7za4go67843qz58z4rgdhafu3pu68"
@@ -35,10 +32,12 @@ def get_user(user_id):
 
 @app.route("/")
 def main():
-    return render_template("tasks.html", tasks = tasks)
+    return redirect("/todolist")
 
-@app.route("/tasks")
-def tasks():
+@app.route("/todolist")
+def todolist():
+    with open("tasks.json", "r") as tasks_data:
+        tasks = json.load(tasks_data)
     return render_template("tasks.html", tasks = tasks)
 
 @app.route("/login", methods=["POST"])
@@ -66,16 +65,12 @@ def loginfailed():
 @app.route("/admin")
 @login_required
 def admin():
-    return "admin"
+    return render_template("admin.html")
 
 @app.route("/log", methods=["POST"])
 def log():
     done = True
     # iterate over request.form.keys() dismissing "Abschicken"
-    #aufgaben = [int(i) for i in request.form.get("Aufgabe", [])]
-#    done_tasks = [i for i in request.form.keys()]
-    #print(request.form.keys())
-    #done_tasks = [i for i in request.form.keys()]
     done_tasks = []
     for key in request.form.keys():
         try:
@@ -92,7 +87,19 @@ def log():
     print(json.dumps(tasks))
     with open(f"time", "w") as file:
         file.write(json.dumps(create_log(done)))
-    return "ok"
+    return create_log(done)
+
+@app.route("/addtask", methods=["POST", "GET"])
+@login_required
+def addtask():
+    print(request.form)
+    with open("tasks.json", "w") as tasks_data:
+        t = json.loads(tasks_data)
+        t.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
+        file.write(t)
+    #tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
+#    print(tasks)
+    return redirect("/")
 
 def create_log(done):
     date = datetime.datetime.now()
