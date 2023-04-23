@@ -93,10 +93,12 @@ def log():
 @login_required
 def addtask():
     print(request.form)
-    with open("tasks.json", "w") as tasks_data:
-        t = json.loads(tasks_data)
-        t.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
-        file.write(t)
+    with open("tasks.json", "wr") as tasks_data: 
+        tasks = json.load(tasks_data)
+    with open("tasks.json", "w") as tasks_data: 
+        tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
+        #breakpoint()
+        tasks_data.write(json.dumps(tasks))
     #tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
 #    print(tasks)
     return redirect("/")
