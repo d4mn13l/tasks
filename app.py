@@ -78,10 +78,10 @@ def log():
             done = False
     print(json.dumps(tasks))
     with open(f"time", "w") as file:
-        file.write(json.dumps(tasks))
+        file.write(json.dumps(create_log(done)))
     return "ok"
 
 def create_log(done):
     date = datetime.datetime.now()
     if done == True:
-        return date.strftime("%c"), ", "
+        return date.strftime("%c"), ", alle Aufgaben erledigt."
