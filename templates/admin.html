@@ -1,7 +1,18 @@
 <html>
+    <form method="POST" action="/deletetask">
+        {%for task in tasks%}
+        <input type="checkbox" name="{{task.id}}" id="{{task.title}}" value="{{ task.id }}">
+        <label for="{{task.title}}">{{task.title}}</label>
+        <br>
+        {%endfor%}
+        <input type="submit" name="löschen">
+        <label for="löschen">Ausgewählte löschen</label>
+    </form>
     <form method="POST" action="/addtask">
         <label for="title">Name der Aufgabe</label>
         <input type="text" name="title" id="title"><br>
+        <label for="description">Beschreibung</label>
+        <input type="text" name="description" id="description"><br>
         <input type="submit" name="bestätigen">
     </form>
 </html>

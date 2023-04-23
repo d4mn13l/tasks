@@ -65,7 +65,8 @@ def loginfailed():
 @app.route("/admin")
 @login_required
 def admin():
-    return render_template("admin.html")
+    tasks = get_tasks()
+    return render_template("admin.html", tasks=tasks)
 
 @app.route("/log", methods=["POST"])
 def log():
@@ -77,7 +78,7 @@ def log():
             done_tasks.append(int(key))
         except TypeError:
             continue
-    print(done_tasks)
+    tasks = get_tasks()
     for task in tasks:
         if task["id"] in done_tasks:
             task["done"] = True
@@ -93,19 +94,47 @@ def log():
 @login_required
 def addtask():
     print(request.form)
-    with open("tasks.json", "wr") as tasks_data: 
-        tasks = json.load(tasks_data)
+    tasks = get_tasks()
     with open("tasks.json", "w") as tasks_data: 
-        tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
-        #breakpoint()
+        breakpoint()
+        tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": request.form["description"]})
         tasks_data.write(json.dumps(tasks))
-    #tasks.append({"id": len(tasks) + 1, "title": request.form["title"], "done": False, "Beschreibung": ""})
-#    print(tasks)
     return redirect("/")
+
+@app.route("/deletetask", methods=["POST"])
+def deletetask():
+    tasks = get_tasks()
+    to_delete = []
+    for key in request.form.keys():
+        try:
+            to_delete.append(int(key))
+        except ValueError:
+            continue
+    for task in tasks:
+        if task["id"] in to_delete:
+            tasks.remove(task)
+    update_task_ids()
+    set_tasks(tasks)
+    return redirect("/")
+
 
 def create_log(done):
     date = datetime.datetime.now()
     return date.strftime("%c"), ", alle Aufgaben erledigt." if done == True else "nicht alles erledigt"
+
+def get_tasks():
+    with open("tasks.json", "r") as tasks_data:
+        return json.load(tasks_data)
+
+def set_tasks(tasks):
+    with open("tasks.json", "w") as tasks_data:
+        tasks_data.write(json.dumps(tasks))
+
+def update_task_ids():
+    tasks = get_tasks()
+    for i in range(0, len(tasks)):
+        tasks[i]["id"] = i
+    set_tasks(tasks)
 
 if __name__ == "__main__":
     app.run(debug=True)
