@@ -1,0 +1,13 @@
+body {
+    background-color: cyan;
+    text-align: center
+}
+h1 {
+    color: grey;
+    margin-left: 20px;
+}
+.loginWindow {
+    height: 50%;
+    width: 50%; 
+}
+

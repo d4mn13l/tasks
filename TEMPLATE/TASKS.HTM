@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <form method="POST" action="/log">
+            <h1>Aufgaben</h1>
+            {%for task in tasks%}
+                <input type="checkbox" name="Aufgabe" id="{{task.title}}" value="{{ task.id }}">
+                <label for="{{task.title}}">{{task.title}}</label>
+                <br>
+            {%endfor%}
+            <input type="submit" name="Abschicken">
+        </form>
+        <form method="POST" action="/login">
+            <input type="submit" name="login" value="login">
+        </form>
+    </body>
+</html>
