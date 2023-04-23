@@ -7,7 +7,6 @@ from flask_login import (
     login_required,
 )
 import json
-from openpyxl import load_workbook
 import time
 import datetime
 
@@ -85,3 +84,6 @@ def create_log(done):
     date = datetime.datetime.now()
     if done == True:
         return date.strftime("%c"), ", alle Aufgaben erledigt."
+
+if __name__ == "__main__":
+    app.run(debug=True)
