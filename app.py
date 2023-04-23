@@ -68,6 +68,7 @@ def admin():
 @app.route("/log", methods=["POST"])
 def log():
     done = True
+    # iterate over request.form.keys() dismissing "Abschicken"
     aufgaben = [int(i) for i in request.form.get("Aufgabe", [])]
     for task in tasks:
         if task["id"] in aufgaben:
@@ -82,8 +83,12 @@ def log():
 
 def create_log(done):
     date = datetime.datetime.now()
+    d = ""
     if done == True:
-        return date.strftime("%c"), ", alle Aufgaben erledigt."
+        d = date.strftime("%c"), ", alle Aufgaben erledigt."
+    else:
+        d = "nicht alles erledigt"
+    return d
 
 if __name__ == "__main__":
     app.run(debug=True)
