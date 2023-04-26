@@ -29,11 +29,13 @@
                         {%endfor%}
                     </div>
                     <input type="submit" name="-1" class="btn btn-primary">
-                </form>
-                
+                </form>                
                 <form method="POST" action="/login">
                     <input type="submit" name="login" value="login" class="btn btn-danger">
                 </form>
+                <a href="/admin">Admin-Optionen</a>
+                <a href="/logout">Logout</a>
+                <p1>Logged in as {{current_user.name}}</p1>
             </div>
         </div>
     </div>

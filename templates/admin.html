@@ -1,8 +1,9 @@
 <html>
-    <form method="POST" action="/deletetask">
+    <form method="POST" action="/handleadmininput">
         {%for task in tasks%}
         <input type="checkbox" name="{{task.id}}" id="{{task.title}}" value="{{ task.id }}">
         <label for="{{task.title}}">{{task.title}}</label>
+        <input type="submit" name="edit" value="{{ task.title }}">
         <br>
         {%endfor%}
         <input type="submit" name="löschen">

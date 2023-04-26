@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, url_for
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -10,8 +10,6 @@ import json
 import time
 import datetime
 
-#with open("tasks.json", "r") as tasks_data:
-#    tasks = json.loads(tasks_data)
 
 app = Flask(__name__)
 app.secret_key = "q377v5zn8304zn47tiug2du7za4go67843qz58z4rgdhafu3pu68"
@@ -20,6 +18,8 @@ app.debug = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+login_manager.login_view = "/login"
 
 class User(UserMixin):
     def __init__(self, user_id):
@@ -39,13 +39,14 @@ def todolist():
     tasks = get_tasks()
     return render_template("tasks.html", tasks = tasks)
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["POST", "GET"])
 def login():
     return render_template("authentication.html")
 
 @app.route("/logout")
 def logout():
-    pass
+    logout_user()
+    return redirect("/")
 
 @app.route("/dologin", methods=["POST"])
 def dologin():
@@ -97,21 +98,41 @@ def addtask():
     set_tasks(tasks)
     return redirect("/")
 
-@app.route("/deletetask", methods=["POST"])
+@app.route("/handleadmininput", methods=["POST"])
+def handleadmininput():
+    tasks = get_tasks()
+    if request.form.get("edit"):
+        for task in tasks:
+            if task["title"] in request.form.get("edit"):
+                print("edit")
+                return redirect(url_for("edittask", task=task))
+    return redirect(url_for("deletetask", keys=request.form.keys()))
+
+@app.route("/deletetask", methods=["POST", "GET"])
 def deletetask():
     tasks = get_tasks()
     to_delete = []
-    for key in request.form.keys():
+    keys = request.args.get("keys")
+    for key in keys:
         try:
             to_delete.append(int(key))
         except ValueError:
             continue
-    for task in tasks:
+    for task in tasks: #doesn't iterate over all tasks
+        print(task["id"])
         if task["id"] in to_delete:
+            print("removed", task)
             tasks.remove(task)
     set_tasks(tasks)
     update_task_ids()
     return redirect("/")
+
+@app.route("/edittask", methods=["GET", "POST"])
+def edittask():
+    if request.method == "GET":
+        return render_template("edittask.html", task=request.args.get("task"))
+    return "ok"
+#   how to get the "task" var from edittask.html back here
 
 
 def create_log(done):

@@ -1,0 +1,11 @@
+<html>
+    <body>
+        <form method="POST" action="/edittask">
+            <input type="text" name="title" id="title" value=" {{task.title}} ">
+            <label for="title">Name der Aufgabe</label>
+            <br>
+            <input type="text" name="description" id="description" value=" {{ task.description }}">
+            <label for="description">Beschreibung</label>
+            <input type="submit" name="bestätigen">
+    </body>
+</html>
