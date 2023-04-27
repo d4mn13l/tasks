@@ -21,6 +21,8 @@ login_manager.init_app(app)
 
 login_manager.login_view = "/login"
 
+edittask_id = 0
+
 class User(UserMixin):
     def __init__(self, user_id):
         self.id = user_id
@@ -32,6 +34,7 @@ def get_user(user_id):
 
 @app.route("/")
 def main():
+    print(get_tasks())
     return redirect("/todolist")
 
 @app.route("/todolist")
@@ -104,7 +107,7 @@ def handleadmininput():
     if request.form.get("edit"):
         for task in tasks:
             if task["title"] in request.form.get("edit"):
-                print("edit")
+                edittask_id = task["id"]
                 return redirect(url_for("edittask", task=task))
     return redirect(url_for("deletetask", keys=request.form.keys()))
 
@@ -131,8 +134,11 @@ def deletetask():
 def edittask():
     if request.method == "GET":
         return render_template("edittask.html", task=request.args.get("task"))
-    return "ok"
-#   how to get the "task" var from edittask.html back here
+    tasks = get_tasks()
+    tasks[edittask_id - 1] = {"id": edittask_id, "title": request.form.get("title"), "done": False, "description": request.form.get("description")}
+    #there must be a better way to get the id here
+    set_tasks(tasks)
+    return redirect("/")
 
 
 def create_log(done):
